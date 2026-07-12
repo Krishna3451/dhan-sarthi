@@ -34,6 +34,24 @@ Dhan Sarthi gives **every IDBI customer a private banker**:
 Complete the 30-second avatar onboarding → explore the Insights dashboard → open the
 **Future Self** tab and drag the SIP slider from ₹2,000 to ₹18,000.
 
+### 🎙 Live voice call (the good part)
+
+Tap **"Talk to future you"** and have a real-time spoken conversation with your
+future self — powered by OpenAI's **gpt-realtime** speech-to-speech model over WebRTC.
+Say *"what if I invest twenty thousand a month?"* and watch the agent move the SIP
+slider itself, change its own world on screen, and narrate the projection it computed.
+It can also navigate the app and book a human RM callback — all by voice, with live
+captions and a typed fallback.
+
+To enable it, paste an OpenAI API key when prompted. The key is stored **only in your
+browser's localStorage** — it never appears in this repo, the deployed bundle, or any
+server of ours. (In production this is the bank's own in-region hosted model — no
+third-party keys.)
+
+| Live call | Voice-driven planning |
+|---|---|
+| ![Voice call](docs/screens/11-voice-call-greeting.png) | ![Voice tool call](docs/screens/12-voice-call-tool.png) |
+
 Run locally:
 
 ```bash
@@ -49,7 +67,7 @@ npm run dev
 | Stylised parameterised SVG future-self | Age-progressed rendering from the customer's consented photo |
 | Rule-based nudges & canned advisory Q&A | LLM advisory layer with guardrails, grounded in the bank's product shelf (MF, FD, LIC insurance/annuities) |
 | Deterministic SIP/corpus math (client-side) | Goal engine with Monte-Carlo projections + suitability service |
-| Web Speech API voice | Multilingual TTS/STT (11 languages, matching IDBI GO Mobile+) |
+| Live speech-to-speech via OpenAI gpt-realtime (browser-supplied key) | Bank-hosted, in-region realtime voice models; 11 languages, matching IDBI GO Mobile+ |
 
 ## Stack
 
