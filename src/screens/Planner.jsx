@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import FutureSelf from '../components/FutureSelf.jsx'
 import { persona, riskProfiles, sipFutureValue, corpusNeeded, spendTotal, formatINR } from '../data.js'
 
@@ -9,8 +8,7 @@ const captions = [
   { at: 1.0, text: (c) => <>Freedom. <b>{c}</b> means work becomes a choice at 60 — and future-you is officially proud of you.</> },
 ]
 
-export default function Planner({ riskProfile, onToast }) {
-  const [sip, setSip] = useState(5000)
+export default function Planner({ riskProfile, sip, setSip, onToast }) {
   const years = persona.retireAt - persona.age
   const { rate, mix } = riskProfiles[riskProfile]
   const corpus = sipFutureValue(sip, years, rate)

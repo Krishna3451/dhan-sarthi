@@ -273,6 +273,83 @@ input[type="range"]::-moz-range-thumb {
   padding: 10px 6px 2px;
 }
 
+/* ============ live voice call ============ */
+.call-fab {
+  position: absolute; right: 14px; bottom: 86px; z-index: 25;
+  border: 0; border-radius: 999px; cursor: pointer; font-family: inherit;
+  background: linear-gradient(135deg, var(--accent-500), var(--accent-600));
+  color: #fff; font-size: 13px; font-weight: 800; padding: 12px 16px;
+  box-shadow: 0 10px 26px rgba(217, 108, 20, 0.45);
+  animation: fab-pulse 2.6s ease infinite;
+}
+@keyframes fab-pulse {
+  0%, 100% { box-shadow: 0 10px 26px rgba(217,108,20,0.45); }
+  50% { box-shadow: 0 10px 26px rgba(217,108,20,0.45), 0 0 0 9px rgba(240,130,30,0.14); }
+}
+
+.voice-overlay {
+  position: absolute; inset: 0; z-index: 40;
+  background: linear-gradient(165deg, #0c2b24 0%, #071512 70%);
+  display: flex; flex-direction: column; align-items: center;
+  padding: 26px 22px calc(20px + env(safe-area-inset-bottom));
+  color: #e9f2ef; animation: rise 0.3s ease;
+}
+.v-close {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  width: 34px; height: 34px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(255,255,255,0.08); color: #fff; font-size: 14px; cursor: pointer;
+}
+.v-stage { display: flex; flex-direction: column; align-items: center; margin-top: 34px; }
+.v-halo {
+  width: 190px; height: 190px; border-radius: 50%; overflow: hidden;
+  border: 3px solid rgba(240, 130, 30, 0.55); background: #dcefe9;
+  transition: box-shadow 0.12s linear;
+}
+.v-halo svg { width: 190px; height: 190px; object-fit: cover; transform: scale(1.55) translateY(14px); }
+.v-name { margin-top: 14px; font-size: 12px; font-weight: 700; color: #ffc188; letter-spacing: 0.04em; }
+.v-status { margin-top: 6px; font-size: 13px; color: #9fd2c4; min-height: 18px; }
+.v-status.speaking { color: #ffc188; }
+
+.v-captions { flex: 1; width: 100%; display: flex; flex-direction: column; justify-content: flex-end; gap: 8px; padding: 18px 4px; overflow: hidden; }
+.v-user { font-size: 12px; color: #8ba69e; text-align: right; font-style: italic; }
+.v-bot { font-size: 15px; line-height: 1.5; color: #f3f8f6; max-height: 128px; overflow: hidden; display: flex; align-items: flex-end; }
+
+.v-typebar { display: flex; gap: 8px; width: 100%; margin-bottom: 10px; }
+.v-typebar input {
+  flex: 1; border: 1px solid rgba(255,255,255,0.2); border-radius: 999px;
+  background: rgba(255,255,255,0.07); color: #fff; font-family: inherit;
+  font-size: 12.5px; padding: 10px 15px; outline: none;
+}
+.v-typebar input::placeholder { color: #6f8a82; }
+.v-typebar input:focus { border-color: rgba(240,130,30,0.6); }
+.v-typebar button {
+  width: 38px; border-radius: 50%; border: 0; cursor: pointer;
+  background: var(--accent-500); color: #fff; font-size: 16px; font-weight: 800;
+}
+.v-typebar button:disabled { opacity: 0.35; cursor: default; }
+
+.v-controls { display: flex; gap: 10px; width: 100%; }
+.v-btn {
+  flex: 1; border: 1px solid rgba(255,255,255,0.22); border-radius: 13px;
+  background: rgba(255,255,255,0.08); color: #fff; font-family: inherit;
+  font-size: 13.5px; font-weight: 700; padding: 13px 0; cursor: pointer;
+}
+.v-btn.warn { background: rgba(250, 178, 25, 0.2); border-color: rgba(250, 178, 25, 0.5); }
+.v-btn.end { background: rgba(208, 59, 59, 0.85); border-color: transparent; }
+.v-finenote { margin-top: 10px; font-size: 9.5px; color: #6f8a82; text-align: center; line-height: 1.5; }
+
+.v-keysheet { margin: auto 0; width: 100%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 18px; padding: 22px 18px; }
+.v-keyhead { font-size: 17px; font-weight: 800; margin-bottom: 10px; }
+.v-keysheet p { font-size: 12.5px; line-height: 1.55; color: #b9cfc8; margin-bottom: 14px; }
+.v-keysheet p b { color: #fff; }
+.v-keysheet input {
+  width: 100%; border: 1px solid rgba(255,255,255,0.25); border-radius: 11px;
+  background: rgba(0,0,0,0.3); color: #fff; font-family: inherit; font-size: 13px;
+  padding: 12px 13px; margin-bottom: 12px; outline: none;
+}
+.v-keysheet input:focus { border-color: var(--accent-500); }
+.v-keysheet .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
 /* toast */
 .toast {
   position: absolute; left: 16px; right: 16px; bottom: 84px; z-index: 30;

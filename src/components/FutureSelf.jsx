@@ -14,7 +14,7 @@ function mixHex(c1, c2, t) {
   return `#${h(lerp(r1, r2, t))}${h(lerp(g1, g2, t))}${h(lerp(b1, b2, t))}`
 }
 
-export default function FutureSelf({ age = 29, prosperity = 0.5, width = '100%' }) {
+export default function FutureSelf({ age = 29, prosperity = 0.5, width = '100%', talk = 0 }) {
   const ageT = Math.min(1, Math.max(0, (age - 29) / 31)) // 0 at 29 → 1 at 60
   const p = Math.min(1, Math.max(0, prosperity))
 
@@ -114,8 +114,12 @@ export default function FutureSelf({ age = 29, prosperity = 0.5, width = '100%' 
         {/* nose */}
         <path d="M 180 124 Q 176 134 181 137" stroke="#c08d62" strokeWidth="2.4" fill="none" strokeLinecap="round" />
 
-        {/* mouth: frown ↔ smile */}
-        <path d={`M 164 ${148 - smile / 3} Q 180 ${148 + smile} 196 ${148 - smile / 3}`} stroke="#9c5a3c" strokeWidth="3.4" fill="none" strokeLinecap="round" />
+        {/* mouth: frown ↔ smile; opens while speaking */}
+        {talk > 0.04 ? (
+          <ellipse cx="180" cy={149 + smile / 3} rx={7 + talk * 8} ry={2.5 + talk * 8} fill="#7c4530" />
+        ) : (
+          <path d={`M 164 ${148 - smile / 3} Q 180 ${148 + smile} 196 ${148 - smile / 3}`} stroke="#9c5a3c" strokeWidth="3.4" fill="none" strokeLinecap="round" />
+        )}
 
         {/* cheerful cheeks when prosperous */}
         <g opacity={Math.max(0, p - 0.35)}>
