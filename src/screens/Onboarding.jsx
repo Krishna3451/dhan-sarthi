@@ -25,9 +25,10 @@ export default function Onboarding({ onDone, speak }) {
       delay += 650 + line.length * 4
       setTimeout(() => {
         setTyping(false)
-        setMessages((m) => [...m, { who: 'bot', text: line }])
+        const isLast = i === step.bot.length - 1
+        setMessages((m) => [...m, { who: 'bot', text: line, fineprint: isLast ? step.fineprint : undefined }])
         speak(line)
-        if (i === step.bot.length - 1) setChips(step.chips)
+        if (isLast) setChips(step.chips)
       }, delay)
       delay += 250
     })

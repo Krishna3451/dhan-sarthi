@@ -76,8 +76,8 @@ export default function FutureSelf({ age = 29, prosperity = 0.5, width = '100%',
         <circle cx="40" cy="166" r={lerp(10, 17, p)} fill={mixHex('#9dae9f', '#4d9d63', p)} />
       </g>
 
-      {/* person: shoulders + head */}
-      <g>
+      {/* person: shoulders + head — idle life: breathing group, blinking eyes, wandering gaze */}
+      <g className="fs-person">
         <path d={`M 108 250 Q 110 196 152 186 L 208 186 Q 250 196 252 250 Z`} fill={shirt} />
         {/* collar / blazer hint when prosperous */}
         <path d="M 168 188 L 180 206 L 192 188 Z" fill={collar} opacity={0.25 + p * 0.75} />
@@ -101,8 +101,12 @@ export default function FutureSelf({ age = 29, prosperity = 0.5, width = '100%',
         <path d={`M 188 ${108 + browLift} Q 197 ${104 + browLift} 206 ${108 + browLift}`} stroke={hair} strokeWidth="3.5" fill="none" strokeLinecap="round" />
 
         {/* eyes */}
-        <circle cx="163" cy="120" r="4" fill="#2b2620" />
-        <circle cx="197" cy="120" r="4" fill="#2b2620" />
+        <g className="fs-gaze">
+          <g className="fs-eyes">
+            <circle cx="163" cy="120" r="4" fill="#2b2620" />
+            <circle cx="197" cy="120" r="4" fill="#2b2620" />
+          </g>
+        </g>
 
         {/* age lines */}
         <g stroke="#c08d62" strokeWidth="1.6" fill="none" strokeLinecap="round" opacity={lineOpacity}>

@@ -67,6 +67,22 @@ export function corpusNeeded(monthlySpendToday, yearsToRetire, inflation = 0.06)
   return (futureMonthly * 12) / 0.04
 }
 
+// Life events "unlocked" as goal coverage crosses thresholds (BitLife mechanic).
+// Written in the future self's first person — the writing IS the product (MIT Future You).
+export const lifeEvents = [
+  { at: 0.25, icon: '🛒', text: '2049 — I stopped doing the maths before every grocery run.' },
+  { at: 0.5, icon: '🎉', text: 'Age 60 — I retired on time. No "just two more years."' },
+  { at: 0.75, icon: '💍', text: "2054 — Meera's wedding. I paid for all of it. Happy tears." },
+  { at: 1.0, icon: '🏖️', text: '2057 — work became a choice. I chose the beach at Gokarna.' },
+]
+
+// Everyday prices inflated to 2057 (6% for 31 years ≈ 6.1×) — the Merrill trick.
+export const prices2057 = [
+  { item: 'Cutting chai', today: 15, future: 91 },
+  { item: 'Milk, 1 litre', today: 65, future: 396 },
+  { item: 'Movie ticket', today: 300, future: 1826 },
+]
+
 export function formatINR(x) {
   if (x >= 1e7) return `₹${(x / 1e7).toFixed(x >= 1e8 ? 0 : 1)} Cr`
   if (x >= 1e5) return `₹${(x / 1e5).toFixed(1)} L`
@@ -78,8 +94,8 @@ export const onboardingScript = [
   {
     key: 'intro',
     bot: [
-      'Namaste Rohan! 🙏 I\'m Dhan Sarthi — and I\'m not a chatbot. I\'m you, from the future.',
-      'My job is simple: make sure the Rohan of 2057 thanks the Rohan of today. A few quick questions so my advice actually fits you?',
+      'Namaste Rohan! 🙏 It\'s me — you, at sixty. I know how this sounds. Bear with me.',
+      'I remember 2026… salary on the 1st, gone by the 20th, chai at the tapri. I\'m here so my life turns out well — which means yours. A few quick questions?',
     ],
     chips: [{ label: "Let's do it", value: 'yes' }, { label: 'What do you do with my data?', value: 'privacy' }],
   },
@@ -106,6 +122,7 @@ export const onboardingScript = [
       'Good choice. Now the question that actually decides your investment mix — be honest!',
       'Your ₹1,00,000 investment falls to ₹80,000 in a market crash. What do you do?',
     ],
+    fineprint: 'Required by SEBI (IA) Regulations — your answers form your risk profile, recorded & editable anytime.',
     chips: [
       { label: '😰 Sell before it gets worse', value: 'sell' },
       { label: '😐 Wait it out', value: 'hold' },

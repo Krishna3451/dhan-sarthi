@@ -150,6 +150,7 @@ export default function VoiceCall({ progress, riskProfile, toolHandler, onClose 
 
   return (
     <div className="voice-overlay">
+      <div className={`v-ring ${status}`} />
       <button className="v-close" onClick={end}>✕</button>
 
       <div className="v-stage">
