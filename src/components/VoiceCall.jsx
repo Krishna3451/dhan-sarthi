@@ -5,6 +5,26 @@ import { buildInstructions, voiceTools } from '../lib/persona.js'
 
 const KEY_STORE = 'ds_oai_key'
 
+// Public token backend: mints short-lived ephemeral keys so visitors need no key.
+// Same-origin path works on the Vercel deployment; the absolute URL covers GitHub Pages.
+const TOKEN_ENDPOINTS = [
+  '/api/realtime-token',
+  'https://dhan-sarthi.vercel.app/api/realtime-token',
+]
+
+async function fetchEphemeralKey() {
+  for (const url of TOKEN_ENDPOINTS) {
+    try {
+      const r = await fetch(url, { method: 'POST' })
+      if (r.ok) {
+        const d = await r.json()
+        if (d.value) return d.value
+      }
+    } catch { /* endpoint unavailable — try next */ }
+  }
+  return null
+}
+
 export function getStoredKey() {
   // allow #k=sk-... for quick team demos (fragment never hits any server)
   const m = window.location.hash.match(/[#&]k=([^&]+)/)
@@ -24,6 +44,7 @@ const STATUS_LABEL = {
 
 export default function VoiceCall({ progress, riskProfile, toolHandler, onClose }) {
   const [key, setKey] = useState(getStoredKey)
+  const [gate, setGate] = useState(getStoredKey() ? 'call' : 'fetching') // fetching | keysheet | call
   const [draft, setDraft] = useState('')
   const [status, setStatus] = useState('idle')
   const [error, setError] = useState(null)
@@ -42,8 +63,20 @@ export default function VoiceCall({ progress, riskProfile, toolHandler, onClose 
     return () => clearInterval(id)
   }, [])
 
+  // no stored key → get a visitor token from the public backend
   useEffect(() => {
-    if (!key) return
+    if (gate !== 'fetching') return
+    let cancelled = false
+    fetchEphemeralKey().then((ek) => {
+      if (cancelled) return
+      if (ek) { setKey(ek); setGate('call') }
+      else setGate('keysheet')
+    })
+    return () => { cancelled = true }
+  }, [gate])
+
+  useEffect(() => {
+    if (!key || gate !== 'call') return
     let cancelled = false
     ;(async () => {
       const session = await startVoiceSession({
@@ -61,37 +94,51 @@ export default function VoiceCall({ progress, riskProfile, toolHandler, onClose 
         onUserCaption: (t) => !cancelled && setUserLine(t?.trim() || ''),
         onError: (why) => {
           if (cancelled) return
-          if (why === 'bad-key') { localStorage.removeItem(KEY_STORE); setKey(''); setError(null) }
-          else setError(why)
+          if (why === 'bad-key' && !key.startsWith('ek_')) {
+            localStorage.removeItem(KEY_STORE); setKey(''); setError(null); setGate('fetching')
+          } else setError(why)
         },
       })
       if (cancelled) session?.stop()
       else sessionRef.current = session
     })()
     return () => { cancelled = true; sessionRef.current?.stop(); sessionRef.current = null }
-  }, [key, riskProfile]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [key, gate, riskProfile]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const end = () => { sessionRef.current?.stop(); onClose() }
 
-  if (!key) {
+  if (gate === 'fetching') {
+    return (
+      <div className="voice-overlay">
+        <button className="v-close" onClick={onClose}>✕</button>
+        <div className="v-stage" style={{ margin: 'auto 0' }}>
+          <div className="v-halo"><FutureSelf age={60} prosperity={progress} /></div>
+          <div className="v-status">Waking up your future self…</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (gate === 'keysheet') {
     return (
       <div className="voice-overlay">
         <button className="v-close" onClick={onClose}>✕</button>
         <div className="v-keysheet">
           <div className="v-keyhead">🎙 Enable live voice</div>
           <p>
-            The live call runs on OpenAI's <b>gpt-realtime</b> speech-to-speech model.
-            Paste a demo API key — it is stored <b>only in this browser</b> (localStorage),
+            Couldn't reach the public voice backend right now. You can still start the
+            call with your own OpenAI key — it runs on the <b>gpt-realtime</b>
+            speech-to-speech model and is stored <b>only in this browser</b> (localStorage),
             never in our code or servers.
           </p>
           <input
             type="password" placeholder="sk-…" value={draft} autoFocus
             onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter' && draft.startsWith('sk-')) { localStorage.setItem(KEY_STORE, draft.trim()); setKey(draft.trim()) } }}
+            onKeyDown={(e) => { if (e.key === 'Enter' && draft.startsWith('sk-')) { localStorage.setItem(KEY_STORE, draft.trim()); setKey(draft.trim()); setGate('call') } }}
           />
           <button
             className="btn primary" disabled={!draft.startsWith('sk-')}
-            onClick={() => { localStorage.setItem(KEY_STORE, draft.trim()); setKey(draft.trim()) }}
+            onClick={() => { localStorage.setItem(KEY_STORE, draft.trim()); setKey(draft.trim()); setGate('call') }}
           >
             Start the call
           </button>
