@@ -30,23 +30,25 @@ Dhan Sarthi gives **every IDBI customer a private banker**:
 
 ## Try the demo
 
-**Live:** see the deployment link on the repo sidebar.
+**Live: https://dhan-sarthi.vercel.app** (mirror: https://krishna3451.github.io/dhan-sarthi/)
+
 Complete the 30-second avatar onboarding → explore the Insights dashboard → open the
 **Future Self** tab and drag the SIP slider from ₹2,000 to ₹18,000.
 
-### 🎙 Live voice call (the good part)
+### 🎙 Live voice call (the good part) — works for everyone, no setup
 
 Tap **"Talk to future you"** and have a real-time spoken conversation with your
 future self — powered by OpenAI's **gpt-realtime** speech-to-speech model over WebRTC.
 Say *"what if I invest twenty thousand a month?"* and watch the agent move the SIP
 slider itself, change its own world on screen, and narrate the projection it computed.
 It can also navigate the app and book a human RM callback — all by voice, with live
-captions and a typed fallback.
+captions and a typed fallback for noisy rooms.
 
-To enable it, paste an OpenAI API key when prompted. The key is stored **only in your
-browser's localStorage** — it never appears in this repo, the deployed bundle, or any
-server of ours. (In production this is the bank's own in-region hosted model — no
-third-party keys.)
+Voice is enabled for all visitors via a serverless token backend
+(`api/realtime-token.js`): the OpenAI key lives server-side as an env var and browsers
+receive only short-lived ephemeral tokens (10-minute expiry, per-IP rate limiting,
+origin allowlist). No key ever appears in this repo or the shipped bundle. (In
+production this is the bank's own in-region hosted model — no third parties.)
 
 | Live call | Voice-driven planning |
 |---|---|
